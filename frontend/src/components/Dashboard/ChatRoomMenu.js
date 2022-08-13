@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // import '../../css/chat-room-menu.css'
 
-const ChatRoomMenu = () => {
+const ChatRoomMenu = ({ isOpen }) => {
   const tempContacts = [
     { name: 'Anders'
     , lastMessage: 'Lorem ipsum dolor sit amet',
@@ -19,6 +19,15 @@ const ChatRoomMenu = () => {
     '7 seconds ago',
     newMessageCount: 3
   }]
+
+  useEffect(() => {
+    if (isOpen) {
+      document.querySelector('.chat-room-menu').style.left = '0'
+    } else {
+      document.querySelector('.chat-room-menu').style.left = '-450px'
+    }
+  }, [isOpen])
+
   return (
     <div className="chat-room-menu">
       <div className="contact-nav">

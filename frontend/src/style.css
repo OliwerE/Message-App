@@ -98,9 +98,27 @@ code {
   margin-bottom: 50px;
 }
 
+/* Dashboard */
+
+.dashboard .dashboard-header {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Components */
 
 /* Chatroom Menu */
+.chat-room-menu {
+  background-color: orange;
+  position: absolute;
+  top: 75px;
+  height: calc(100vh - 75px);
+  width: 450px;
+  left: -450px;
+  transition-duration: 350ms;
+}
 
 .chat-room-menu .contact-nav {
   width: 100%;
