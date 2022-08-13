@@ -10,7 +10,7 @@ import createError from 'http-errors'
 export class ApiController {
   getTest (req, res, next) {
     try {
-      res.json({ msg: 'Hello World from backend!' })
+      res.json({ msg: 'Hello from backend!' })
     } catch (err) {
       next(createError(500))
     }
