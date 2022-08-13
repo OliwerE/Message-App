@@ -34,9 +34,9 @@ code {
 
 /* Pages */
 
-/* Start Page */
+/* Login Page & Register Page */
 
-#start {
+.login-page, .register-page {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -45,12 +45,7 @@ code {
   box-sizing: border-box;
 }
 
-
-/* Components */
-
-/* Login Component */
-
-.login {
+.login-box, .register-box {
   width: 320px;
   height: fit-content;
   background-color: #fff;
@@ -61,15 +56,14 @@ code {
   flex-direction: column;
 }
 
-.login h1 {
+.login-box h1, .register-box h1 {
   font-size: 2rem;
   margin: 0;
-  margin-bottom: 2rem;
   margin-top: 50px;
   text-align: center;
 }
 
-.login form {
+.login-box form, .register-box form {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -77,7 +71,7 @@ code {
   gap: 1rem;
 }
 
-.login form input:not(:last-child) {
+.login-box form input:not(:last-child), .register-box form input:not(:last-child) {
   width: 200px;
   height: 25px;
   outline: none;
@@ -85,7 +79,7 @@ code {
   border-bottom: 1px solid #c5c5c5;
 }
 
-.login form input:last-child {
+.login-box form input:last-child, .register-box form input:last-child {
   width: 200px;
   height: 30px;
   background-color: #fff;
@@ -94,12 +88,14 @@ code {
   border-radius: 0.25rem;
 }
 
-.login form input:last-child:hover {
+.login-box form input:last-child:hover, .register-box form input:last-child:hover {
   cursor: pointer;
   transition-duration: 150ms;
   background-color: #c5c5c5;
 }
 
-.login p {
+.login-box p, .register-box p {
   margin-bottom: 50px;
 }
+
+/* Components */
