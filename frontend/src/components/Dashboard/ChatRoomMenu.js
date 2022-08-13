@@ -24,7 +24,7 @@ const ChatRoomMenu = ({ isOpen }) => {
     if (isOpen) {
       document.querySelector('.chat-room-menu').style.left = '0'
     } else {
-      document.querySelector('.chat-room-menu').style.left = '-450px'
+      document.querySelector('.chat-room-menu').style.left = '-320px'
     }
   }, [isOpen])
 

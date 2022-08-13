@@ -13,9 +13,12 @@
   "author": "Oliwer Ellréus",
   "license": "ISC",
   "dependencies": {
+    "connect-mongo": "^4.6.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.3",
     "helmet": "^4.4.1",
+    "mongoose": "^6.5.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {

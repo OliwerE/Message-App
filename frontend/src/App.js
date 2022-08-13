@@ -7,8 +7,8 @@ import Register from './pages/Register'
 import Dashboard from "./pages/Dashboard"
 
 function App() {
-  const [auth] = useState(true)
-  const [hasLoaded] = useState(true) // Add loading screen?
+  const [auth, setAuth] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false) // Add loading screen?
 
   const isAuthRoutes = (
     <>
@@ -34,6 +34,24 @@ function App() {
       {hasLoaded && (auth === true ? isAuthRoutes : unauthRoutes)}
     </>
   )
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/auth`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'No-Store'
+      }
+    }).then(res => {
+      return res.json()
+    }).then(json => {
+      setAuth(json.isAuth)
+      setHasLoaded(true)
+    }).catch(err => {
+      console.error(err)
+    })
+  }, [])
 
   return (
     <>
