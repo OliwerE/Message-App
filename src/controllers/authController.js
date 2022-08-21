@@ -82,8 +82,7 @@ export class AuthController {
    */
   async loginUser (req, res, next) {
     try {
-      const { username, password } = req.user
-
+      const { username, password } = req.body
       if (username.trim().length > 1000 || password.trim().length > 1000) {
         return res.status(400).json({ msg: 'Username and/or password is too long. Max length: 1000' })
       }
@@ -103,6 +102,7 @@ export class AuthController {
         return res.status(401).json({ msg: 'Invalid credentials' })
       }
     } catch (err) {
+      console.log(err)
       next(createError(500))
     }
   }

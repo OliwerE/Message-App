@@ -36,7 +36,7 @@ function App() {
   )
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/auth`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/check`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -46,6 +46,7 @@ function App() {
     }).then(res => {
       return res.json()
     }).then(json => {
+      console.log(json)
       setAuth(json.isAuth)
       setHasLoaded(true)
     }).catch(err => {
