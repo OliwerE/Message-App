@@ -33,12 +33,40 @@ export class AuthController {
     }
   }
 
+  async loginUser (req, res, next) {
+    try {
+      const { username, password } = req.user
+
+      if (username.trim().length > 1000 || password.trim().length > 1000) {
+        return res.status(400).json({ msg: 'Username and/or password is too long. Max length: 1000' })
+      }
+
+      const user = await User.find({ username })
+
+      if (user.length === 1 && user[0].username === username) {
+        const isCorrectPassword = await bcrypt.compare(password, user[0].password)
+
+        if (isCorrectPassword) {
+          req.session.user = username
+          return res.status(200).json({ msg: 'User logged in.' })
+        } else {
+          return res.status(401).json({ msg: 'Invalid credentials' })
+        }
+      } else {
+        return res.status(401).json({ msg: 'Invalid credentials' })
+      }
+    } catch (err) {
+      next(createError(500))
+    }
+  }
+
   /**
    * Create a new user.
    *
    * @param {object} req - Request object.
    * @param {object} res - Response object.
    * @param {Function} next - Next function.
+   * @returns {JSON} - Response data.
    */
   async registerUser (req, res, next) {
     try {
@@ -59,7 +87,7 @@ export class AuthController {
 
           await newUser.save()
 
-          res.status(200).json({ msg: 'User has been created.' })
+          return res.status(200).json({ msg: 'User has been created.' })
         } else {
           return res.status(409).json({ msg: 'Username already exist. Choose another username.' })
         }
