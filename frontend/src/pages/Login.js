@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ setAuth }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -24,6 +24,7 @@ const Login = () => {
       }).then(status => {
         if (status === 200) {
           console.log('user has been logged in!')
+          setAuth(true)
         } else if (status === 400) {
           console.log('something went wrong')
           // Add status message
