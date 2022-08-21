@@ -108,14 +108,35 @@ export class AuthController {
   }
 
   /**
+   * Returns username of current user.
+   *
+   * @param {object} req - The request object.
+   * @param {object} res - The response object.
+   * @param {Function} next - Next function.
+   * @returns {JSON} - Response data.
+   */
+  getUsername (req, res, next) {
+    try {
+      return res.json({ username: req.session.user })
+    } catch (err) {
+      next(createError(500))
+    }
+  }
+
+  /**
    * Logout user.
    *
    * @param {object} req - The request object.
    * @param {object} res - The response object.
    * @param {Function} next - Next function.
+   * @returns {JSON} - Response data.
    */
   logout (req, res, next) {
-    req.session.destroy()
-    res.clearCookie(process.env.SESSION_NAME).json({ msg: 'User has been logged out' })
+    try {
+      req.session.destroy()
+      return res.clearCookie(process.env.SESSION_NAME).json({ msg: 'User has been logged out' })
+    } catch (err) {
+      next(createError(500))
+    }
   }
 }
