@@ -10,7 +10,12 @@ const Login = ({ setAuth }) => {
 
     console.log('username: ' + username + ', password: ' + password)
 
-    if (username.trim().length <= 1000 && username.trim().length > 0 && password.trim().length <= 1000 && password.trim().length > 0) {
+    if (username.trim().length > 0 && password.trim().length > 0) {
+      if (username.trim().length > 1000 || password.trim().length > 1000) {
+        console.log('username and/or password is not between 1 and 1000 characters.')
+        return
+      }
+
       fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
         method: 'POST',
         credentials: 'include',
@@ -38,13 +43,11 @@ const Login = ({ setAuth }) => {
           console.log('something went wrong')
           // Add status message
         }
-
       }).catch(err => {
         console.error(err)
       })
     } else {
       console.log('username and/or password is not between 1 and 1000 characters.')
-      // ToDo: Create modal
     }
   }
 
