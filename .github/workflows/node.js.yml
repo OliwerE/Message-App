@@ -16,8 +16,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-        env:
-          REACT_APP_API_BASE_URL: ${{ REACT_APP_API_BASE_URL }}
       - run: |
             npm i
             cd frontend
