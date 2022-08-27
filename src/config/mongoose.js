@@ -51,7 +51,7 @@ export const connectDB = async (app) => {
 
   // Production session options
   if (app.get('env') === 'production') {
-    sessionOptions.cookie.domain = process.env.DOMAIN
+    // sessionOptions.cookie.domain = process.env.DOMAIN
     sessionOptions.cookie.secure = true
   }
 
