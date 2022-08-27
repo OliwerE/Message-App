@@ -16,11 +16,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-        env:
-          REACT_APP_API_BASE_URL: ${{ REACT_APP_API_BASE_URL }}
       - run: |
             npm i
             cd frontend
+            cp /home/ubuntu/message-app-react-env/.env /var/www/message-app/_work/Message-App/Message-App/frontend/.env
             npm i
             npm run build
             cd ..
@@ -28,3 +27,5 @@ jobs:
             pm2 start 0
             pm2 save
             sudo service nginx restart
+        env:
+          CI: false
