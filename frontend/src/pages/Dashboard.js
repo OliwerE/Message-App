@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import ChatRoomMenu from '../components/Dashboard/ChatRoomMenu'
 import ChatRoom from '../components/Dashboard/ChatRoom'
+import Logout from '../components/Dashboard/Logout'
 
-const Dashboard = () => {
+const Dashboard = ({ auth, setAuth }) => {
   const [isChatRoomMenuOpen, setIsChatRoomMenuOpen] = useState(false)
   const [username, setUsername] = useState('')
 
@@ -35,6 +36,7 @@ const Dashboard = () => {
 
   return (
     <div className='dashboard'>
+      <Logout auth={auth} setAuth={setAuth} />
       <div className="dashboard-header">
         {/* <button onClick={handleToggleDashboardMenu}>Menu</button> */}
         <h1>Dashboard, Logged in user: {username}</h1>
