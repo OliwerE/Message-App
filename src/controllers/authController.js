@@ -34,6 +34,22 @@ export class AuthController {
   }
 
   /**
+   * Return new csrf token.
+   *
+   * @param {object} req - Request object.
+   * @param {object} res - Response object.
+   * @param {Function} next - Next function.
+   */
+  getCsrfToken (req, res, next) {
+    try {
+      res.json({ csrfToken: req.csrfToken() })
+    } catch (err) {
+      console.log(err)
+      next(createError(500))
+    }
+  }
+
+  /**
    * Create a new user.
    *
    * @param {object} req - Request object.

@@ -1,15 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 
-const Register = () => {
+import GlobalCsrfTokenStateContext from '../contexts/GlobalCsrfTokenStateContext'
+
+const Register = ({ updateCsrfToken }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [passwordRepeat, setPasswordRepeat] = useState('')
 
+  const csrfToken = useContext(GlobalCsrfTokenStateContext)
+
   const navigate = useNavigate();
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault()
+
+    await updateCsrfToken()
 
     if (username.trim().length > 0 && password.trim().length > 0) {
       if (username.trim().length > 1000 || password.trim().length > 1000) {
@@ -29,7 +35,8 @@ const Register = () => {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'No-Store'
+          'Cache-Control': 'No-Store',
+          'CSRF-Token': csrfToken.csrfToken
         },
           body: JSON.stringify({ username, password })
       }).then(res => {

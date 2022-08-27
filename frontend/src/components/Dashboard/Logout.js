@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
 
+import GlobalCsrfTokenStateContext from '../../contexts/GlobalCsrfTokenStateContext'
+
 const Logout = ({ auth, setAuth }) => {
-  const navigate = useNavigate();
+  const csrfToken = useContext(GlobalCsrfTokenStateContext)
+
+  const navigate = useNavigate()
+
   const handleFormSubmit = e => {
     e.preventDefault()
 
@@ -11,7 +16,8 @@ const Logout = ({ auth, setAuth }) => {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'No-Store'
+          'Cache-Control': 'No-Store',
+          'CSRF-Token': csrfToken.csrfToken
         },
           body: JSON.stringify({})
       }).then(res => {
@@ -23,6 +29,7 @@ const Logout = ({ auth, setAuth }) => {
           navigate('/')
         } else {
           console.log('something went wrong')
+          console.error(status)
           // Add status message
         }
       }).catch(err => {

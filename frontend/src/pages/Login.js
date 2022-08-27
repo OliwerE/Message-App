@@ -1,12 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Link } from "react-router-dom";
 
-const Login = ({ setAuth }) => {
+import GlobalCsrfTokenStateContext from '../contexts/GlobalCsrfTokenStateContext'
+
+const Login = ({ setAuth, updateCsrfToken }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLoginSubmit = (e) => {
+  const csrfToken = useContext(GlobalCsrfTokenStateContext)
+
+  const handleLoginSubmit = async (e) => {
     e.preventDefault()
+
+    await updateCsrfToken()
 
     console.log('username: ' + username + ', password: ' + password)
 
@@ -21,7 +27,8 @@ const Login = ({ setAuth }) => {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'No-Store'
+          'Cache-Control': 'No-Store',
+          'CSRF-Token': csrfToken.csrfToken
         },
           body: JSON.stringify({ username, password })
       }).then(res => {
@@ -50,6 +57,10 @@ const Login = ({ setAuth }) => {
       console.log('username and/or password is not between 1 and 1000 characters.')
     }
   }
+
+  useEffect(() => {
+
+  }, [])
 
   return (
     <div className='login-page'>

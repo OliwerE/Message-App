@@ -37,8 +37,8 @@ router.post('/register', (req, res, next) => controller.registerUser(req, res, n
 router.post('/login', (req, res, next) => controller.loginUser(req, res, next))
 
 router.get('/username', isLoggedIn, (req, res, next) => controller.getUsername(req, res, next))
-// router.get('/csurf', controller.getCsrfToken)
+router.get('/csurf', (req, res, next) => controller.getCsrfToken(req, res, next))
 
 router.post('/logout', isLoggedIn, (req, res, next) => controller.logout(req, res, next))
 
-router.use('*', (req, res, next) => next(createError(404)))
+// router.use('*', (req, res, next) => next(createError(404)))
