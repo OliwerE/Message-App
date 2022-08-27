@@ -19,6 +19,7 @@ jobs:
       - run: |
             npm i
             cd frontend
+            cp /home/ubuntu/message-app-react-env/.env /var/www/message-app/_work/Message-App/Message-App/frontend/.env
             npm i
             npm run build
             cd ..
