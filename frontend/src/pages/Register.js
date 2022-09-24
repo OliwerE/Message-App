@@ -3,7 +3,9 @@ import { Link, useNavigate } from "react-router-dom"
 
 import GlobalCsrfTokenStateContext from '../contexts/GlobalCsrfTokenStateContext'
 
-const Register = ({ updateCsrfToken }) => {
+import { createUser } from '../api/services/UserService'
+
+const Register = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [passwordRepeat, setPasswordRepeat] = useState('')
@@ -12,10 +14,8 @@ const Register = ({ updateCsrfToken }) => {
 
   const navigate = useNavigate();
 
-  const handleLoginSubmit = async (e) => {
+  const handleLoginSubmit = (e) => {
     e.preventDefault()
-
-    await updateCsrfToken()
 
     if (username.trim().length > 0 && password.trim().length > 0) {
       if (username.trim().length > 1000 || password.trim().length > 1000) {
@@ -30,18 +30,7 @@ const Register = ({ updateCsrfToken }) => {
         return
       }
 
-      fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'No-Store',
-          'CSRF-Token': csrfToken.csrfToken
-        },
-          body: JSON.stringify({ username, password })
-      }).then(res => {
-        return res.status
-      }).then(status => {
+      createUser({ csrfToken: csrfToken.csrfToken, username, password }).then(status => {
         if (status === 200) {
           console.log('user has been registered in!')
           navigate('/')
@@ -58,9 +47,8 @@ const Register = ({ updateCsrfToken }) => {
           console.log('something went wrong')
           // Add status message
         }
-      }).catch(err => {
-        console.error(err)
       })
+
     } else {
       console.log('username and/or password is not between 1 and 1000 characters.')
       // ToDo add message on screen
