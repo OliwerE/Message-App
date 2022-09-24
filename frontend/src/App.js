@@ -35,7 +35,7 @@ function App() {
   const isAuthRoutes = (
     <>
       <Routes>
-        <Route path="/" element={<Dashboard auth={auth} setAuth={setAuth} />} />
+        <Route path="/" element={<Dashboard auth={auth} setAuth={setAuth} updateCsrfToken={updateCsrfToken} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

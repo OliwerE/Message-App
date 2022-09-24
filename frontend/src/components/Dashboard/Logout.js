@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 
 import GlobalCsrfTokenStateContext from '../../contexts/GlobalCsrfTokenStateContext'
 
-const Logout = ({ auth, setAuth }) => {
+const Logout = ({ auth, setAuth, updateCsrfToken }) => {
   const csrfToken = useContext(GlobalCsrfTokenStateContext)
 
   const navigate = useNavigate()
@@ -27,6 +27,7 @@ const Logout = ({ auth, setAuth }) => {
           console.log('user has been logged out!') // add status msg
           setAuth(false)
           navigate('/')
+          updateCsrfToken() // Temporary csrf fix. Must press login/register twice after logout without this line!
         } else {
           console.log('something went wrong')
           console.error(status)
