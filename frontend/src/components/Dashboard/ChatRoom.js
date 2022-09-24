@@ -1,45 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ChatMessages from './ChatMessages'
+import { io } from 'socket.io-client'
 
 const ChatRoom = () => {
-
-  const devMsg = [{
+  const [messages, setMessages] = useState([{
     isYou: true, 
     message: 'Hej!'
   },{
     isYou: false, 
     message: 'Hallå!!!'
-  },{
-    isYou: true, 
-    message: 'Detta är lite text..dadsadsadasd ffaffsdfsdfsdlngsdngdsnldsgsjdgsdjgbjsdgljsdlglgsbgslgslbgslfsdfsdfsdffssdfsdfsdfsfsfdsfdsfsffsdfaf asddsadsadasdasdasdsadbbndasdsadsan'
-  },{
-    isYou: true, 
-    message: 'en fråga till dig....'
-  },{
-    isYou: false, 
-    message: 'jaha'
-  },{
-    isYou: true, 
-    message: 'hörs!'
-  },{
-    isYou: true, 
-    message: 'en fråga till dig....'
-  },{
-    isYou: false, 
-    message: 'jaha'
-  },{
-    isYou: true, 
-    message: 'hörs!'
-  },{
-    isYou: true, 
-    message: 'en fråga till dig....'
-  },{
-    isYou: false, 
-    message: 'jaha'
-  },{
-    isYou: true, 
-    message: 'hörs!'
-  }]
+  }])
+
+  // const devMsg = [{
+  //   isYou: true, 
+  //   message: 'Hej!'
+  // },{
+  //   isYou: false, 
+  //   message: 'Hallå!!!'
+  // }]
+
+  useEffect(() => {
+    const socket = io('ws://localhost:5001', { // use option 2 instead?: https://stackoverflow.com/questions/73007362/socket-io-origin-set-but-anyways-getting-errors
+      transports: ["websocket"] // Bypass cors
+    })
+
+    socket.on('chat-room', message => {
+      console.log(message)
+      console.log(messages)
+
+      // Bug only first message shown
+      const messageArr = [...messages]
+      messageArr.push({ isYou: false, message: message.msg })
+      console.log(messageArr)
+
+      setMessages(messageArr)
+    })
+  }, [])
 
   return (
     <div className="chat-room">
@@ -47,7 +43,7 @@ const ChatRoom = () => {
         <h1>Anders</h1>
       </div>
       <div className="message-container">
-        <ChatMessages messages={devMsg} />
+        <ChatMessages messages={messages} />
       </div>
       <div className="room-input-menu">
         <form>

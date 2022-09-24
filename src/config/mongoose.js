@@ -49,11 +49,14 @@ export const connectDB = async (app) => {
     store: MongoStore.create({ mongoUrl: process.env.DB_CONNECTION_STRING })
   }
 
+  const sessionMiddleware = session(sessionOptions)
+  app.use(sessionMiddleware)
+
   // Production session options
   if (app.get('env') === 'production') {
     // sessionOptions.cookie.domain = process.env.DOMAIN
     sessionOptions.cookie.secure = true
   }
 
-  app.use(session(sessionOptions))
+  return sessionMiddleware // Temp solution!!
 }

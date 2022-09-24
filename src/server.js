@@ -7,6 +7,8 @@ import { router } from './routes/router.js'
 import csurf from 'csurf'
 // import path from 'path'
 
+import { Server } from 'socket.io'
+
 /**
  * Express server configuration.
  */
@@ -14,7 +16,7 @@ async function run () {
   const app = express()
 
   // MongoDB
-  await connectDB(app)
+  const sessionMiddleware = await connectDB(app) // temp solution!
 
   app.use(helmet())
   app.set('trust proxy', 1)
@@ -44,9 +46,42 @@ async function run () {
     return res.json({ msg: ('Error: ' + err.status) })
   })
 
-  app.listen(process.env.PORT, () => {
+  const httpServer = app.listen(process.env.PORT, () => {
     console.log(`Listens for localhost@${process.env.PORT}`)
     console.log('ctrl + c to terminate')
+  })
+
+  const io = new Server(httpServer)
+
+  /**
+   * Socket.io middleware wrapper.
+   *
+   * @param {object} middleware - Middleware object
+   * @returns {object} - Middleware
+   */
+  const wrap = middleware => (socket, next) => middleware(socket.request, {}, next) // convert a connect middleware to a Socket.IO middleware
+
+  io.use(wrap(sessionMiddleware))
+
+  // only allow authenticated users
+  io.use((socket, next) => {
+    // console.log('test')
+    const session = socket.request.session
+    // console.log(session)
+    if (session && session.user) { // used to be: (session && session.authenticated)
+      next()
+    } else {
+      console.log('user not auth, socket access denied')
+      next(new Error('unauthorized')) // Not returning error???
+    }
+  })
+
+  io.on('connection', (socket) => {
+    // console.log(socket.request.session)
+    socket.emit('chat-room', { msg: 'Hello from backend', status: 200 })
+    setTimeout(() => {
+      socket.emit('chat-room', { msg: 'Another message', status: 200 })
+    }, 2000)
   })
 }
 run()
