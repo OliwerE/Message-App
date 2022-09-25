@@ -21,12 +21,15 @@ const ChatRoom = () => {
     // socket.current.emit('chat-room', 'hello from client')
 
     socket.current.on('chat-room', message => {
-      setMessages(messages => [...messages, { isYou: false, message: message.msg }])
+      setMessages(messages => [...messages, { isYou: false, message: message.msg, user: message.user }])
     })
   },[socketUrl])
 
   const handleMessageSubmit = (e) => {
     e.preventDefault()
+
+    setMessages(messages => [...messages, { isYou: true, message: textMessage }])
+
     socket.current.emit('chat-room', textMessage)
     
     setTextMessage('')
