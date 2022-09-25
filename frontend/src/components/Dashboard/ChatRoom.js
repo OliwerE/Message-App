@@ -14,7 +14,8 @@ const ChatRoom = () => {
 
   useEffect(() => {
     socket.current = io(socketUrl, { // use option 2 instead?: https://stackoverflow.com/questions/73007362/socket-io-origin-set-but-anyways-getting-errors
-      transports: ["websocket"] // Bypass cors
+      transports: ["websocket"], // Bypass cors
+      path: '/socket/'
     })
 
     // socket.current.emit('chat-room', 'hello from client')
