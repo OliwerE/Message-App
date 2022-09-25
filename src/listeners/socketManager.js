@@ -31,7 +31,7 @@ sockets.init = function (httpServer, sessionMiddleware) {
 
   io.on('connection', (socket) => {
     // console.log(socket.request.session)
-    socket.emit('chat-room', { msg: 'Welcome to Message App' })
+    socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server' }) // fix: don't allow Server as username!
     // setTimeout(() => {
     //   socket.emit('chat-room', { msg: 'Another message', status: 200 })
     // }, 2000)
@@ -41,7 +41,9 @@ sockets.init = function (httpServer, sessionMiddleware) {
 
     socket.on('chat-room', message => {
       console.log(message)
-      io.sockets.emit('chat-room', { msg: message, status: 200 }) // to all connected
+      console.log(socket.request.session.user)
+      // io.sockets.emit('chat-room', { msg: message, status: 200 }) // to all connected
+      socket.broadcast.emit('chat-room', { msg: message, user: socket.request.session.user }) // all except sender
       // socket.emit('chat-room', { msg: message, status: 200 }) // only to sender!
     })
   })
