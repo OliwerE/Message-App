@@ -14,8 +14,7 @@ const ChatMessages = ({ messages }) => {
           } else {
             return <li className="msg">
               <div>
-                <b>{msg.user}:</b>
-                <span>{msg.message}</span>
+                <span><b>{msg.user}:</b> {msg.message}</span>
               </div>
             </li>
           }

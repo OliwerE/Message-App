@@ -48,11 +48,10 @@ function App() {
   )
 
   useEffect(() => {
-    updateCsrfToken()
-
     isAuthorized().then(json => {
       console.log(json)
       setAuth(json.isAuth)
+      updateCsrfToken()
       setHasLoaded(true)
     })
   }, [])
