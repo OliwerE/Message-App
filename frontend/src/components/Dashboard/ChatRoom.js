@@ -8,7 +8,7 @@ const ChatRoom = () => {
   const [messages, setMessages] = useState([])
   const [textMessage, setTextMessage] = useState('')
 
-  const socketUrl = 'ws://localhost:5001'
+  const socketUrl = process.env.REACT_APP_API_BASE_URL
   let socket = useRef(null)
   
 
