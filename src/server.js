@@ -1,12 +1,12 @@
 import express from 'express'
+import session from 'express-session'
 import helmet from 'helmet'
 import logger from 'morgan'
 import cors from 'cors'
 import { connectDB } from './config/mongoose.js'
+import { mongoStore } from './config/mongoStore.js'
 import { router } from './routes/router.js'
 import csurf from 'csurf'
-// import path from 'path'
-
 
 import { sockets } from './listeners/socketManager.js'
 
@@ -17,8 +17,31 @@ async function run () {
   const app = express()
 
   // MongoDB
-  const sessionMiddleware = await connectDB(app) // temp solution!
+  await connectDB(app) // temp solution!
 
+  // Configure Express session
+  const sessionOptions = {
+    name: process.env.SESSION_NAME,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // 24h
+      sameSite: 'lax'
+    },
+    store: mongoStore
+  }
+
+  // Production session options
+  if (app.get('env') === 'production') {
+    // sessionOptions.cookie.domain = process.env.DOMAIN
+    sessionOptions.cookie.secure = true
+  }
+
+  const sessionMiddleware = session(sessionOptions)
+
+  app.use(sessionMiddleware)
   app.use(helmet())
   app.set('trust proxy', 1)
   app.use(cors({ origin: process.env.ORIGIN, credentials: true }))
