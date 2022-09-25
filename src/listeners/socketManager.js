@@ -11,7 +11,9 @@ export const sockets = {}
  * @param {object} sessionMiddleware - Express session.
  */
 sockets.init = function (httpServer, sessionMiddleware) {
-  const io = new Server(httpServer)
+  const io = new Server(httpServer, {
+    path: '/socket/'
+  })
   io.use(wrap(sessionMiddleware))
 
   // only allow authenticated users
