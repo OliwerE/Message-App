@@ -1,54 +1,48 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ChatMessages from './ChatMessages'
 import { io } from 'socket.io-client'
 
-const ChatRoom = () => {
-  const [messages, setMessages] = useState([{
-    isYou: true, 
-    message: 'Hej!'
-  },{
-    isYou: false, 
-    message: 'Hallå!!!'
-  }])
+let socket
 
-  // const devMsg = [{
-  //   isYou: true, 
-  //   message: 'Hej!'
-  // },{
-  //   isYou: false, 
-  //   message: 'Hallå!!!'
-  // }]
+const ChatRoom = () => {
+  const [messages, setMessages] = useState([])
+  const [textMessage, setTextMessage] = useState('')
+
+  const socketUrl = 'ws://localhost:5001'
+  let socket = useRef(null)
+  
 
   useEffect(() => {
-    const socket = io('ws://localhost:5001', { // use option 2 instead?: https://stackoverflow.com/questions/73007362/socket-io-origin-set-but-anyways-getting-errors
+    socket.current = io(socketUrl, { // use option 2 instead?: https://stackoverflow.com/questions/73007362/socket-io-origin-set-but-anyways-getting-errors
       transports: ["websocket"] // Bypass cors
     })
 
-    socket.on('chat-room', message => {
-      console.log(message)
-      console.log(messages)
+    // socket.current.emit('chat-room', 'hello from client')
 
-      // Bug only first message shown
-      const messageArr = [...messages]
-      messageArr.push({ isYou: false, message: message.msg })
-      console.log(messageArr)
-
-      setMessages(messageArr)
+    socket.current.on('chat-room', message => {
+      setMessages(messages => [...messages, { isYou: false, message: message.msg }])
     })
-  }, [])
+  },[socketUrl])
+
+  const handleMessageSubmit = (e) => {
+    e.preventDefault()
+    socket.current.emit('chat-room', textMessage)
+    
+    setTextMessage('')
+  }
 
   return (
     <div className="chat-room">
       <div className="room-header">
-        <h1>Anders</h1>
+        <h1>Public chat room</h1>
       </div>
       <div className="message-container">
         <ChatMessages messages={messages} />
       </div>
       <div className="room-input-menu">
-        <form>
-          <input className="message-input" type="text" placeholder="Message..."  />
-          <input className="send-btn" type="button" value="Send" />
+        <form onSubmit={handleMessageSubmit}>
+          <input className="message-input" name='message' type="text" value={textMessage} onChange={e => setTextMessage(e.target.value)} placeholder="Message..."  />
+          <input className="send-btn" type="submit" value="Send" />
         </form>
       </div>
     </div>

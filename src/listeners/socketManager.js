@@ -29,9 +29,18 @@ sockets.init = function (httpServer, sessionMiddleware) {
 
   io.on('connection', (socket) => {
     // console.log(socket.request.session)
-    socket.emit('chat-room', { msg: 'Hello from backend', status: 200 })
-    setTimeout(() => {
-      socket.emit('chat-room', { msg: 'Another message', status: 200 })
-    }, 2000)
+    socket.emit('chat-room', { msg: 'Welcome to Message App' })
+    // setTimeout(() => {
+    //   socket.emit('chat-room', { msg: 'Another message', status: 200 })
+    // }, 2000)
+    // setTimeout(() => {
+    //   socket.emit('chat-room', { msg: 'THIRD', status: 200 })
+    // }, 4000)
+
+    socket.on('chat-room', message => {
+      console.log(message)
+      io.sockets.emit('chat-room', { msg: message, status: 200 }) // to all connected
+      // socket.emit('chat-room', { msg: message, status: 200 }) // only to sender!
+    })
   })
 }
