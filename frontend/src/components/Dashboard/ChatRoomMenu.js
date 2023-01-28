@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 // import '../../css/chat-room-menu.css'
 
-const ChatRoomMenu = ({ isOpen }) => {
+const ChatRoomMenu = ({ isOpen, socket }) => {
+  const [users, setUsers] = useState([])
+
   const tempContacts = [
     { name: 'Anders'
     , lastMessage: 'Lorem ipsum dolor sit amet',
@@ -21,6 +23,13 @@ const ChatRoomMenu = ({ isOpen }) => {
   }]
 
   useEffect(() => {
+    socket.current.on('users', users => { // ToDo Sort users
+      console.log(users)
+      setUsers(users)
+    })
+  }, [])
+
+  useEffect(() => {
     if (isOpen) {
       document.querySelector('.chat-room-menu').style.left = '0'
     } else {
@@ -31,22 +40,23 @@ const ChatRoomMenu = ({ isOpen }) => {
   return (
     <div className="chat-room-menu">
       <div className="contact-nav">
-        <h2>My Chats</h2>
+        {/* <h2>My Chats</h2> */}
+        <h2>Online</h2>
       </div>
       <ul>
-      {tempContacts.map((contact, i) => {
+      {users.map((user, i) => {
         return (
         <li key={i}>
-          <div className="contact-name">{contact.name}</div>
-          <div className="contact-last-message">{contact.lastMessage}</div>
-          <div className="contact-time-ago">{contact.lastMessageTimeAgo}</div>
-          <div className="contact-new-msg-count">
+          <div id={user.userID} className="contact-name">{user.username}</div>
+          {/* <div className="contact-last-message">{contact.lastMessage}</div> */}
+          {/* <div className="contact-time-ago">{contact.lastMessageTimeAgo}</div> */}
+          {/* <div className="contact-new-msg-count">
             {contact.newMessageCount > 0 ? (
               <div>
                 {contact.newMessageCount}
               </div>
             ) : null}
-          </div>
+          </div> */}
         </li>
         ) 
       })}

@@ -12,7 +12,6 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
   const [username, setUsername] = useState('')
   const [isSocketConnected, setIsSocketConnected] = useState(false)
 
-  /*
   const handleToggleDashboardMenu = () => {
     if(isChatRoomMenuOpen) {
       setIsChatRoomMenuOpen(false)
@@ -20,7 +19,6 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
       setIsChatRoomMenuOpen(true)
     }
   }
-  */
 
   const socketUrl = process.env.REACT_APP_WEBSOCKET_URL
   let socket = useRef(null)
@@ -46,10 +44,10 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
     <div className='dashboard'>
       <Logout auth={auth} setAuth={setAuth} updateCsrfToken={updateCsrfToken} />
       <div className="dashboard-header">
-        {/* <button onClick={handleToggleDashboardMenu}>Menu</button> */}
+        <button onClick={handleToggleDashboardMenu}>Menu</button>
         <h1>Dashboard, Logged in user: {username}</h1>
       </div>
-      {/* <ChatRoomMenu isOpen={isChatRoomMenuOpen} /> */}
+      {isSocketConnected ? <ChatRoomMenu socket={socket} isOpen={isChatRoomMenuOpen} /> : null}
       <div style={{ height: '600px' }}>
         {isSocketConnected ? <ChatRoom socket={socket} /> : null}
       </div>
