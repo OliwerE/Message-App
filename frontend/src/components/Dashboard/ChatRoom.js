@@ -16,6 +16,7 @@ const ChatRoom = ({ socket, chatUsername, chatUserID }) => {
 
   useEffect(() => {
     socket.current.off('private message') // disable current private message
+    setMessages([])
     
     // socket.current.on('chat-room', message => {
     //   setMessages(messages => [...messages, { isSelf: false, message: message.msg, user: message.user }])
