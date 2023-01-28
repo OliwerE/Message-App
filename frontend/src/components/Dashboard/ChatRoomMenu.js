@@ -13,7 +13,25 @@ const ChatRoomMenu = ({ socket, handleChangeChatRoom }) => {
     socket.current.on("user connected", (user) => { // ToDo Sort users
       setUsers(users => [...users, user])
     })
-  }, [])
+
+    // remove disconnected user
+    /*
+    socket.current.on('user_disconnected', (disconnectedUser) => {
+      console.log('DISCONNECT: ' + disconnectedUser.userID)
+      console.log(users.length)
+      
+      users.forEach((user, i) => {
+        console.log(user.userID)
+        if (user.userID === disconnectedUser.userID) { // FUNKAR INTE!
+          console.log('FOUND!!')
+          const newUserList = [...users]
+          delete newUserList[i]
+          setUsers(() => newUserList)
+        }
+      })
+    })
+    */
+  }, []) // [users, socket]
 
   return (
     <div className="chat-room-menu">

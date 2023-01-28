@@ -37,7 +37,7 @@ sockets.init = function (httpServer, sessionMiddleware) {
         username: socket.request.session.user
       })
     }
-    console.log(users)
+    // console.log(users)
     // socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server' }) // fix: don't allow Server as username!
     socket.emit('users', users) // Connected users
 
@@ -58,12 +58,16 @@ sockets.init = function (httpServer, sessionMiddleware) {
     */
 
     socket.on('private message', ({ content, to }) => {
-      console.log(content)
-      console.log(to)
+      // console.log(content)
+      // console.log(to)
       socket.to(to).emit('private message', {
         content,
         from: socket.id
       })
+    })
+
+    socket.on('disconnect', () => {
+      io.emit('user_disconnected', { userID: socket.id })
     })
   })
 }

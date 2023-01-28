@@ -39,7 +39,6 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
 
   const handleChangeChatRoom = (e) => {
     if (e.target.nodeName === 'LI') { // If User element
-      console.log('change room')
       const userID = e.target.querySelector('div').id
       const username = e.target.querySelector('div').textContent
 

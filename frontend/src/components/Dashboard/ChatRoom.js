@@ -5,15 +5,6 @@ const ChatRoom = ({ socket, chatUsername, chatUserID }) => {
   const [messages, setMessages] = useState([])
   const [textMessage, setTextMessage] = useState('')
 
-
-  useEffect(() => {
-    console.log('------- in chat room ------')
-    console.log(chatUsername)
-    console.log(chatUserID)
-    console.log('---------------')
-  }, [chatUsername, chatUserID])
-
-
   useEffect(() => {
     socket.current.off('private message') // disable current private message
     setMessages([])
@@ -23,9 +14,9 @@ const ChatRoom = ({ socket, chatUsername, chatUserID }) => {
     // })
 
     socket.current.on('private message', ({ content, from }) => {
-      console.log(content)
-      console.log('from: ' + from)
-      console.log('chatuserid: ' + chatUserID)
+      // console.log(content)
+      // console.log('from: ' + from)
+      // console.log('chatuserid: ' + chatUserID)
       if (chatUserID === from) {
         setMessages(messages => [...messages, { isSelf: false, message: content, user: chatUsername }])
       }
