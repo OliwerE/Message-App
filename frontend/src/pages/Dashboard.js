@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+import { io } from 'socket.io-client'
 
 import ChatRoomMenu from '../components/Dashboard/ChatRoomMenu'
 import ChatRoom from '../components/Dashboard/ChatRoom'
@@ -9,6 +10,7 @@ import { getUsername } from '../api/services/UserService'
 const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
   const [isChatRoomMenuOpen, setIsChatRoomMenuOpen] = useState(false)
   const [username, setUsername] = useState('')
+  const [isSocketConnected, setIsSocketConnected] = useState(false)
 
   /*
   const handleToggleDashboardMenu = () => {
@@ -19,6 +21,17 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
     }
   }
   */
+
+  const socketUrl = process.env.REACT_APP_WEBSOCKET_URL
+  let socket = useRef(null)
+
+  useEffect(() => {
+    socket.current = io(socketUrl, { // use option 2 instead?: https://stackoverflow.com/questions/73007362/socket-io-origin-set-but-anyways-getting-errors
+      transports: ["websocket"], // Bypass cors
+      path: '/socket/'
+    })
+    setIsSocketConnected(true)
+  },[socketUrl])
 
   useEffect(() => {
 
@@ -38,7 +51,7 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
       </div>
       {/* <ChatRoomMenu isOpen={isChatRoomMenuOpen} /> */}
       <div style={{ height: '600px' }}>
-        <ChatRoom />
+        {isSocketConnected ? <ChatRoom socket={socket} /> : null}
       </div>
     </div>
   )
