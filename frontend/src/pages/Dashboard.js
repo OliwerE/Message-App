@@ -8,9 +8,14 @@ import Logout from '../components/Dashboard/Logout'
 import { getUsername } from '../api/services/UserService'
 
 const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
-  const [isChatRoomMenuOpen, setIsChatRoomMenuOpen] = useState(false)
   const [username, setUsername] = useState('')
   const [isSocketConnected, setIsSocketConnected] = useState(false)
+  // const [currentChatRoom, setCurrentChatRoom] = useState({ userID: undefined, username: undefined})
+  const [chatUsername, setChatUsername] = useState('')
+  const [chatUserID, setChatUserID] = useState('')
+
+  // const chatUserID = useRef('')
+  // const chatUsername = useRef('')
 
   const socketUrl = process.env.REACT_APP_WEBSOCKET_URL
   let socket = useRef(null)
@@ -32,6 +37,17 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
       })
   }, [])
 
+  const handleChangeChatRoom = (e) => {
+    if (e.target.nodeName === 'LI') { // If User element
+      console.log('change room')
+      const userID = e.target.querySelector('div').id
+      const username = e.target.querySelector('div').textContent
+
+      setChatUsername(username)
+      setChatUserID(userID)
+    }
+  }
+
   return (
     <div className='dashboard'>
       <Logout auth={auth} setAuth={setAuth} updateCsrfToken={updateCsrfToken} />
@@ -39,8 +55,8 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
         <h1>Dashboard, Logged in user: {username}</h1>
       </div>
       <div className='dashboard-main-content'>
-        {isSocketConnected ? <ChatRoomMenu socket={socket} isOpen={isChatRoomMenuOpen} /> : null}
-        {isSocketConnected ? <ChatRoom socket={socket} /> : null}
+        {isSocketConnected ? <ChatRoomMenu socket={socket} handleChangeChatRoom={handleChangeChatRoom} /> : null}
+        {isSocketConnected ? <ChatRoom socket={socket} chatUsername={chatUsername} chatUserID={chatUserID} /> : null}
       </div>
     </div>
   )

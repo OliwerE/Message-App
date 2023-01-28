@@ -1,26 +1,8 @@
 import React, { useEffect, useState } from 'react'
 // import '../../css/chat-room-menu.css'
 
-const ChatRoomMenu = ({ isOpen, socket }) => {
+const ChatRoomMenu = ({ socket, handleChangeChatRoom }) => {
   const [users, setUsers] = useState([])
-
-  const tempContacts = [
-    { name: 'Anders'
-    , lastMessage: 'Lorem ipsum dolor sit amet',
-    lastMessageTimeAgo:
-    '1 hours ago',
-    newMessageCount: 5
-  }, { name: 'Kalle'
-    , lastMessage: 'consectetur adipiscing elit',
-    lastMessageTimeAgo:
-    '5 days ago',
-    newMessageCount: 0
-  }, { name: 'Olle'
-    , lastMessage: 'Praesent luctus velit',
-    lastMessageTimeAgo:
-    '7 seconds ago',
-    newMessageCount: 3
-  }]
 
   useEffect(() => {
     socket.current.on('users', connectedUsers => { // ToDo Sort users
@@ -39,7 +21,7 @@ const ChatRoomMenu = ({ isOpen, socket }) => {
         {/* <h2>My Chats</h2> */}
         <h2>Online</h2>
       </div>
-      <ul>
+      <ul onClick={handleChangeChatRoom}>
       {users.map((user, i) => {
         return (
         <li key={i}>
