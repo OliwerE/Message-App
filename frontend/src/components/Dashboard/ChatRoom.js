@@ -48,7 +48,7 @@ const ChatRoom = ({ socket, chatUsername, chatUserID }) => {
       </div>
       <div className="room-input-menu">
         <form onSubmit={handleMessageSubmit}>
-          <input className="message-input" name='message' type="text" value={textMessage} onChange={e => setTextMessage(e.target.value)} placeholder="Message..."  />
+          <input className="message-input" name='message' type="text" autocomplete="off" value={textMessage} onChange={e => setTextMessage(e.target.value)} placeholder="Message..."  />
           <input className="send-btn" type="submit" value="Send" />
         </form>
       </div>
