@@ -33,14 +33,6 @@ const ChatRoomMenu = ({ isOpen, socket }) => {
     })
   }, [])
 
-  useEffect(() => {
-    if (isOpen) {
-      document.querySelector('.chat-room-menu').style.left = '0'
-    } else {
-      document.querySelector('.chat-room-menu').style.left = '-320px'
-    }
-  }, [isOpen])
-
   return (
     <div className="chat-room-menu">
       <div className="contact-nav">
