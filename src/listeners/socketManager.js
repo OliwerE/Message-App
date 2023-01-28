@@ -30,14 +30,15 @@ sockets.init = function (httpServer, sessionMiddleware) {
   })
 
   io.on('connection', (socket) => {
-    // console.log(socket.request.session)
-    socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server' }) // fix: don't allow Server as username!
-    // setTimeout(() => {
-    //   socket.emit('chat-room', { msg: 'Another message', status: 200 })
-    // }, 2000)
-    // setTimeout(() => {
-    //   socket.emit('chat-room', { msg: 'THIRD', status: 200 })
-    // }, 4000)
+    const users = []
+    for (const [id, socket] of io.of('/').sockets) {
+      users.push({
+        userID: id,
+        username: socket.request.session.user
+      })
+    }
+    console.log(users)
+    socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server', users }) // fix: don't allow Server as username!
 
     socket.on('chat-room', message => {
       console.log(message)
