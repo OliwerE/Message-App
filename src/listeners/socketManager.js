@@ -31,14 +31,15 @@ sockets.init = function (httpServer, sessionMiddleware) {
 
   io.on('connection', (socket) => {
     const users = []
-    for (const [id, socket] of io.of('/').sockets) {
+    for (const [id, socket] of io.of('/').sockets) { // Only getting users of current server, not good for scaling!!
       users.push({
         userID: id,
         username: socket.request.session.user
       })
     }
     console.log(users)
-    socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server', users }) // fix: don't allow Server as username!
+    socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server' }) // fix: don't allow Server as username!
+    socket.emit('users', users) // Connected users
 
     socket.on('chat-room', message => {
       console.log(message)
