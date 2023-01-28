@@ -30,21 +30,44 @@ sockets.init = function (httpServer, sessionMiddleware) {
   })
 
   io.on('connection', (socket) => {
-    // console.log(socket.request.session)
-    socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server' }) // fix: don't allow Server as username!
-    // setTimeout(() => {
-    //   socket.emit('chat-room', { msg: 'Another message', status: 200 })
-    // }, 2000)
-    // setTimeout(() => {
-    //   socket.emit('chat-room', { msg: 'THIRD', status: 200 })
-    // }, 4000)
+    const users = []
+    for (const [id, socket] of io.of('/').sockets) { // Only getting users of current server, not good for scaling!!
+      users.push({
+        userID: id,
+        username: socket.request.session.user
+      })
+    }
+    // console.log(users)
+    // socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server' }) // fix: don't allow Server as username!
+    socket.emit('users', users) // Connected users
 
-    socket.on('chat-room', message => {
+    // Add user to all clients except itself
+    socket.broadcast.emit('user connected', {
+      userID: socket.id,
+      username: socket.request.session.user
+    })
+
+    /*
+    socket.on('chat-room', message => { // public chat
       console.log(message)
       console.log(socket.request.session.user)
       // io.sockets.emit('chat-room', { msg: message, status: 200 }) // to all connected
       socket.broadcast.emit('chat-room', { msg: message, user: socket.request.session.user }) // all except sender
       // socket.emit('chat-room', { msg: message, status: 200 }) // only to sender!
+    })
+    */
+
+    socket.on('private message', ({ content, to }) => {
+      // console.log(content)
+      // console.log(to)
+      socket.to(to).emit('private message', {
+        content,
+        from: socket.id
+      })
+    })
+
+    socket.on('disconnect', () => {
+      io.emit('user_disconnected', { userID: socket.id })
     })
   })
 }
