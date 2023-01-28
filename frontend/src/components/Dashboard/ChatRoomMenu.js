@@ -23,9 +23,13 @@ const ChatRoomMenu = ({ isOpen, socket }) => {
   }]
 
   useEffect(() => {
-    socket.current.on('users', users => { // ToDo Sort users
-      console.log(users)
-      setUsers(users)
+    socket.current.on('users', connectedUsers => { // ToDo Sort users
+      setUsers(users => [...users, ...connectedUsers])
+    })
+
+    // Add connected user
+    socket.current.on("user connected", (user) => { // ToDo Sort users
+      setUsers(users => [...users, user])
     })
   }, [])
 

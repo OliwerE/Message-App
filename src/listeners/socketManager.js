@@ -41,6 +41,12 @@ sockets.init = function (httpServer, sessionMiddleware) {
     socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server' }) // fix: don't allow Server as username!
     socket.emit('users', users) // Connected users
 
+    // Add user to all clients except itself
+    socket.broadcast.emit('user connected', {
+      userID: socket.id,
+      username: socket.request.session.user
+    })
+
     socket.on('chat-room', message => {
       console.log(message)
       console.log(socket.request.session.user)
