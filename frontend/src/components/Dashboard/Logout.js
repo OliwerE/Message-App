@@ -29,8 +29,10 @@ const Logout = ({ auth, setAuth, updateCsrfToken }) => {
 
   return (
     <>
-      <form onSubmit={handleFormSubmit}>
-        <input type='submit' value='Logout'/>
+      <form className='logout-form' onSubmit={handleFormSubmit}>
+        <div>
+          <input type='submit' value='Logout'/>
+        </div>
       </form>
     </>
   )

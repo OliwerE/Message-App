@@ -111,11 +111,13 @@ code {
 
 /* Chatroom Menu */
 .chat-room-menu {
-  background-color: orange;
+  grid-area: chat-room-menu;
+  background-color: #f1f1f1;
   top: 75px;
-  height: calc(100vh - 98px);
+  /* height: calc(100vh - 98px); */
+  max-height: calc(100vh - 225px);
   width: 320px;
-  transition-duration: 350ms;
+  /* transition-duration: 350ms; */
 }
 
 .chat-room-menu .contact-nav {
@@ -137,6 +139,8 @@ code {
   list-style: none;
   margin: 0;
   padding: 0;
+  max-height: calc(100vh - 325px);
+  overflow-y: auto; /* ToDo does not look good! */
 }
 
 .chat-room-menu ul li {
@@ -188,9 +192,12 @@ code {
 /* Chat Room */
 
 .chat-room {
+  grid-area: chat-room;
   width: calc(100% - 320px);
-  height: calc(100vh - 98px);
+  height: calc(100vh - 75px);
   background-color: #8f9715;
+  box-sizing: border-box;
+  border-left: 1px solid #c5c5c5;
 }
 
 .chat-room .room-header {
@@ -298,5 +305,59 @@ code {
 }
 
 .dashboard-main-content {
+  display: grid;
+  grid-template-columns: 320px 100%;
+  grid-template-rows: 1fr 200px;
+  grid-template-areas:
+      'chat-room-menu chat-room '
+      'user chat-room ';
+}
+
+.user {
+  grid-area: user;
+  background-color: #f1f1f1;
+  box-sizing: border-box;
+  border-top: 1px solid #c5c5c5;
+}
+
+.user .info {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+}
+
+.user .info img {
+  border: 2px solid #000;
+  border-radius: 50%;
+}
+
+.user .info h1 {
+  font-size: 1.25rem;
+  box-sizing: border-box;
+  margin: 0;
+  padding-top: 0.5rem;
+}
+
+.user .logout-form {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.user .logout-form input {
+  display: block;
+  width: 100px;
+  height: 25px;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  font-weight: bold;
+}
+
+.user .logout-form input:hover {
+  cursor: pointer;
+  background-color: #d1d1d1;
+  transition-duration: 200ms
 }

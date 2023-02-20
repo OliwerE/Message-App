@@ -9,7 +9,7 @@ const ChatRoomMenu = ({ handleChangeChatRoom }) => {
     onUsers(setUsers)
     onUserConnected(users, setUsers)
     onUserDisconnected(setUsers)
-  }, [users]) // fix: [users] causes multiple events!
+  }, [users])
 
   return (
     <div className="chat-room-menu">
