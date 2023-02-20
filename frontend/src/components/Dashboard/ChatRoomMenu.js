@@ -21,7 +21,8 @@ const ChatRoomMenu = ({ socket, handleChangeChatRoom }) => {
 
   useEffect(() => {
     socket.current.on('users', connectedUsers => { // ToDo Sort users
-      setUsers(users => [...users, ...connectedUsers])
+      const connectedUsersExceptSelf = connectedUsers.filter(user => user.userID !== socket.current.id)
+      setUsers(users => [...users, ...connectedUsersExceptSelf])
     })
 
     // Add connected user
