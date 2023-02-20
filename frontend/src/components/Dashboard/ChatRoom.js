@@ -27,9 +27,10 @@ const ChatRoom = ({ socket, chatUsername, chatUserID }) => {
   const handleMessageSubmit = (e) => {
     e.preventDefault()
 
+    if (textMessage.length < 1) return
+
     setMessages(messages => [...messages, { isSelf: true, message: textMessage }])
 
-    // socket.current.emit('chat-room', textMessage) // public
     socket.current.emit('private message', {
       content: textMessage,
       to: chatUserID,
