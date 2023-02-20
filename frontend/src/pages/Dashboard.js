@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ChatRoomMenu from '../components/Dashboard/ChatRoomMenu'
 import ChatRoom from '../components/Dashboard/ChatRoom'
 import Logout from '../components/Dashboard/Logout'
+import User from '../components/Dashboard/User'
 
 import { getUsername } from '../api/services/UserService'
 
@@ -40,13 +41,15 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
 
   return (
     <div className='dashboard'>
-      <Logout auth={auth} setAuth={setAuth} updateCsrfToken={updateCsrfToken} />
       <div className="dashboard-header">
-        <h1>Dashboard, Logged in user: {username}</h1>
+
+        <h1>Message App</h1>
+
       </div>
       <div className='dashboard-main-content'>
         {isSocketConnected ? <ChatRoomMenu handleChangeChatRoom={handleChangeChatRoom} /> : null}
         {isSocketConnected ? <ChatRoom chatUsername={chatUsername} chatUserID={chatUserID} /> : null}
+        {isSocketConnected ? <User username={username} auth={auth} setAuth={setAuth} updateCsrfToken={updateCsrfToken} /> : null}
       </div>
     </div>
   )
