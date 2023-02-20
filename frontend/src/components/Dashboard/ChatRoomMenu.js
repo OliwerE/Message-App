@@ -4,33 +4,35 @@ import React, { useEffect, useState } from 'react'
 const ChatRoomMenu = ({ socket, handleChangeChatRoom }) => {
   const [users, setUsers] = useState([])
 
+  function removeUser(userID) {
+    setUsers(prevUsers => prevUsers.filter(user => user.userID !== userID))
+  }
+
+  useEffect(() => {
+    socket.current.on('user_disconnected', (disconnectedUser) => {
+      console.log('--- user disconnected ---')
+      console.log(disconnectedUser)
+      console.log('------')
+      
+      removeUser(disconnectedUser.userID)
+    })
+  }, [])
+
+
   useEffect(() => {
     socket.current.on('users', connectedUsers => { // ToDo Sort users
-      setUsers(users => [...users, ...connectedUsers])
+      const connectedUsersExceptSelf = connectedUsers.filter(user => user.userID !== socket.current.id)
+      setUsers(users => [...users, ...connectedUsersExceptSelf])
     })
 
     // Add connected user
     socket.current.on("user connected", (user) => { // ToDo Sort users
+      console.log('--- user connected ---')
+      console.log(user)
+      console.log('------')
       setUsers(users => [...users, user])
+      console.log(users)
     })
-
-    // remove disconnected user
-    /*
-    socket.current.on('user_disconnected', (disconnectedUser) => {
-      console.log('DISCONNECT: ' + disconnectedUser.userID)
-      console.log(users.length)
-      
-      users.forEach((user, i) => {
-        console.log(user.userID)
-        if (user.userID === disconnectedUser.userID) { // FUNKAR INTE!
-          console.log('FOUND!!')
-          const newUserList = [...users]
-          delete newUserList[i]
-          setUsers(() => newUserList)
-        }
-      })
-    })
-    */
   }, []) // [users, socket]
 
   return (
