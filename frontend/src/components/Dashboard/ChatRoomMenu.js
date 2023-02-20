@@ -1,39 +1,15 @@
 import React, { useEffect, useState } from 'react'
-// import '../../css/chat-room-menu.css'
 
-const ChatRoomMenu = ({ socket, handleChangeChatRoom }) => {
+import { onUserDisconnected, onUsers, onUserConnected } from '../../api/socket'
+
+const ChatRoomMenu = ({ handleChangeChatRoom }) => {
   const [users, setUsers] = useState([])
 
-  function removeUser(userID) {
-    setUsers(prevUsers => prevUsers.filter(user => user.userID !== userID))
-  }
-
   useEffect(() => {
-    socket.current.on('user_disconnected', (disconnectedUser) => {
-      console.log('--- user disconnected ---')
-      console.log(disconnectedUser)
-      console.log('------')
-      
-      removeUser(disconnectedUser.userID)
-    })
-  }, [])
-
-
-  useEffect(() => {
-    socket.current.on('users', connectedUsers => { // ToDo Sort users
-      const connectedUsersExceptSelf = connectedUsers.filter(user => user.userID !== socket.current.id)
-      setUsers(users => [...users, ...connectedUsersExceptSelf])
-    })
-
-    // Add connected user
-    socket.current.on("user connected", (user) => { // ToDo Sort users
-      console.log('--- user connected ---')
-      console.log(user)
-      console.log('------')
-      setUsers(users => [...users, user])
-      console.log(users)
-    })
-  }, []) // [users, socket]
+    onUsers(setUsers)
+    onUserConnected(users, setUsers)
+    onUserDisconnected(setUsers)
+  }, [users]) // fix: [users] causes multiple events!
 
   return (
     <div className="chat-room-menu">

@@ -1,35 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import ChatMessages from './ChatMessages'
 
-const ChatRoom = ({ socket, chatUsername, chatUserID }) => {
+import { socket, onPrivateMessage } from '../../api/socket'
+
+const ChatRoom = ({ chatUsername, chatUserID }) => {
   const [messages, setMessages] = useState([])
   const [textMessage, setTextMessage] = useState('')
 
   useEffect(() => {
-    socket.current.off('private message') // disable current private message
     setMessages([])
-    
-    // socket.current.on('chat-room', message => {
-    //   setMessages(messages => [...messages, { isSelf: false, message: message.msg, user: message.user }])
-    // })
-
-    socket.current.on('private message', ({ content, from }) => {
-      // console.log(content)
-      // console.log('from: ' + from)
-      // console.log('chatuserid: ' + chatUserID)
-      if (chatUserID === from) {
-        setMessages(messages => [...messages, { isSelf: false, message: content, user: chatUsername }])
-      }
-    })
-
-  },[chatUsername, chatUserID, socket]) // [chatUsername, chatUserID, socket] // körs alltid 2 ggr pga chatusername och chatuserid
+    onPrivateMessage(chatUserID, chatUsername, setMessages)
+  },[chatUsername, chatUserID])
 
   const handleMessageSubmit = (e) => {
     e.preventDefault()
 
+    if (textMessage.length < 1) return
+
     setMessages(messages => [...messages, { isSelf: true, message: textMessage }])
 
-    // socket.current.emit('chat-room', textMessage) // public
     socket.current.emit('private message', {
       content: textMessage,
       to: chatUserID,
