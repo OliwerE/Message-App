@@ -39,7 +39,7 @@ const Login = ({ setAuth, updateCsrfToken }) => {
           setAuth(true)
         } else if (status === 400) {
           console.log('something went wrong')
-          // Add status message
+          // Add status message.
         } else if (status === 401) {
           console.log('something went wrong')
           // Add status message
