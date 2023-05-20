@@ -3,8 +3,6 @@
  */
 
 import mongoose from 'mongoose'
-import session from 'express-session'
-import MongoStore from 'connect-mongo'
 
 /**
  * Represents the mongoose configuration used for the connection to mongoDB.
@@ -33,27 +31,4 @@ export const connectDB = async (app) => {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
-
-  // const MongoDBSessionStore = MongoStore(session)
-
-  const sessionOptions = {
-    name: process.env.SESSION_NAME,
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24, // 24h
-      sameSite: 'lax'
-    },
-    store: MongoStore.create({ mongoUrl: process.env.DB_CONNECTION_STRING })
-  }
-
-  // Production session options
-  if (app.get('env') === 'production') {
-    // sessionOptions.cookie.domain = process.env.DOMAIN
-    sessionOptions.cookie.secure = true
-  }
-
-  app.use(session(sessionOptions))
 }

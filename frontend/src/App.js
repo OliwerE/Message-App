@@ -8,34 +8,24 @@ import Dashboard from "./pages/Dashboard"
 
 import GlobalCsrfTokenStateContext from './contexts/GlobalCsrfTokenStateContext'
 
+import { getCsrfToken, isAuthorized } from './api/auth'
+
 function App() {
   const [auth, setAuth] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false) // Add loading screen?
   const [csrfToken, setCsrfToken] = useState('')
 
   const updateCsrfToken = () => {
-
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/csurf`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'No-Store'
-      }
-    }).then((res) => {
-      return res.json()
-    }).then((json) => {
+    getCsrfToken().then((json) => {
       setCsrfToken(json.csrfToken)
       console.log(json.csrfToken)
-    }).catch(err => {
-      console.error(err)
     })
   }
 
   const isAuthRoutes = (
     <>
       <Routes>
-        <Route path="/" element={<Dashboard auth={auth} setAuth={setAuth} />} />
+        <Route path="/" element={<Dashboard auth={auth} setAuth={setAuth} updateCsrfToken={updateCsrfToken} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
@@ -44,8 +34,8 @@ function App() {
   const unauthRoutes = (
     <>
       <Routes>
-        <Route path="/" element={<Login setAuth={setAuth} updateCsrfToken={updateCsrfToken} />} />
-        <Route path="/register" element={<Register updateCsrfToken={updateCsrfToken} />} />
+        <Route path="/" element={<Login setAuth={setAuth} />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
@@ -58,23 +48,11 @@ function App() {
   )
 
   useEffect(() => {
-    updateCsrfToken()
-
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/check`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'No-Store'
-      }
-    }).then(res => {
-      return res.json()
-    }).then(json => {
+    isAuthorized().then(json => {
       console.log(json)
       setAuth(json.isAuth)
+      updateCsrfToken()
       setHasLoaded(true)
-    }).catch(err => {
-      console.error(err)
     })
   }, [])
 

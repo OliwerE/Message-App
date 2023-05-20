@@ -3,48 +3,53 @@ import React, { useEffect, useState } from 'react'
 import ChatRoomMenu from '../components/Dashboard/ChatRoomMenu'
 import ChatRoom from '../components/Dashboard/ChatRoom'
 import Logout from '../components/Dashboard/Logout'
+import User from '../components/Dashboard/User'
 
-const Dashboard = ({ auth, setAuth }) => {
-  const [isChatRoomMenuOpen, setIsChatRoomMenuOpen] = useState(false)
+import { getUsername } from '../api/services/UserService'
+
+import { connectSocket } from '../api/socket'
+
+const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
   const [username, setUsername] = useState('')
-
-  /*
-  const handleToggleDashboardMenu = () => {
-    if(isChatRoomMenuOpen) {
-      setIsChatRoomMenuOpen(false)
-    } else {
-      setIsChatRoomMenuOpen(true)
-    }
-  }
-  */
+  const [isSocketConnected, setIsSocketConnected] = useState(false)
+  const [chatUsername, setChatUsername] = useState('')
+  const [chatUserID, setChatUserID] = useState('')
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/username`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'No-Store'
-        }
-      }).then(res => {
-        return res.json()
-      }).then(json => {
+    connectSocket()
+    setIsSocketConnected(true)
+  },[])
+
+  useEffect(() => {
+
+    getUsername().then(json => {
         setUsername(json.username)
       }).catch(err => {
         console.error(err)
       })
   }, [])
 
+  const handleChangeChatRoom = (e) => {
+    if (e.target.nodeName === 'LI') { // If User element
+      const userID = e.target.querySelector('div').id
+      const username = e.target.querySelector('div').textContent
+
+      setChatUsername(username)
+      setChatUserID(userID)
+    }
+  }
+
   return (
     <div className='dashboard'>
-      <Logout auth={auth} setAuth={setAuth} />
       <div className="dashboard-header">
-        {/* <button onClick={handleToggleDashboardMenu}>Menu</button> */}
-        <h1>Dashboard, Logged in user: {username}</h1>
+
+        <h1>Message App</h1>
+
       </div>
-      {/* <ChatRoomMenu isOpen={isChatRoomMenuOpen} /> */}
-      <div style={{ height: '600px' }}>
-        <ChatRoom />
+      <div className='dashboard-main-content'>
+        {isSocketConnected ? <ChatRoomMenu handleChangeChatRoom={handleChangeChatRoom} /> : null}
+        {isSocketConnected ? <ChatRoom chatUsername={chatUsername} chatUserID={chatUserID} /> : null}
+        {isSocketConnected ? <User username={username} auth={auth} setAuth={setAuth} updateCsrfToken={updateCsrfToken} /> : null}
       </div>
     </div>
   )

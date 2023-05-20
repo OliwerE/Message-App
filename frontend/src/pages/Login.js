@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 
 import GlobalCsrfTokenStateContext from '../contexts/GlobalCsrfTokenStateContext'
 
-const Login = ({ setAuth, updateCsrfToken }) => {
+import { loginUser } from '../api/services/UserService'
+
+const Login = ({ setAuth }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const csrfToken = useContext(GlobalCsrfTokenStateContext)
 
-  const handleLoginSubmit = async (e) => {
+  const handleLoginSubmit = (e) => {
     e.preventDefault()
-
-    await updateCsrfToken()
 
     console.log('username: ' + username + ', password: ' + password)
 
@@ -22,18 +22,7 @@ const Login = ({ setAuth, updateCsrfToken }) => {
         return
       }
 
-      fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'No-Store',
-          'CSRF-Token': csrfToken.csrfToken
-        },
-          body: JSON.stringify({ username, password })
-      }).then(res => {
-        return res.status
-      }).then(status => {
+      loginUser({ csrfToken: csrfToken.csrfToken, username, password }).then(status => {
         if (status === 200) {
           console.log('user has been logged in!')
           setAuth(true)
@@ -50,9 +39,8 @@ const Login = ({ setAuth, updateCsrfToken }) => {
           console.log('something went wrong')
           // Add status message
         }
-      }).catch(err => {
-        console.error(err)
       })
+
     } else {
       console.log('username and/or password is not between 1 and 1000 characters.')
     }
