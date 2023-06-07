@@ -13,7 +13,7 @@ export function connectSocket() {
 
 export function onUsers(setUsers) {
   socket.current.off('users')
-  socket.current.on('users', connectedUsers => { // todo sort users
+  socket.current.on('users', connectedUsers => { // ToDo sort users
     const connectedUsersExceptSelf = connectedUsers.filter(user => user.userID !== socket.current.id)
     setUsers(users => [...users, ...connectedUsersExceptSelf])
   })
@@ -21,15 +21,41 @@ export function onUsers(setUsers) {
 
 export function onUserConnected(users, setUsers) {
   socket.current.off('user connected')
-  socket.current.on("user connected", (user) => { // todo sort users
-    setUsers(users => [...users, user])
+  socket.current.on("user connected", (user) => {
+    setUsers(users => {
+
+      const updatedUsers = [...users]
+      // Update connected user status to online
+      let hasUpdatedUser = false
+      for (let i = 0; i < updatedUsers.length; i++) {
+        if (updatedUsers[i].userID === user.userID) {
+          updatedUsers[i].connected = true
+          hasUpdatedUser = true
+        }
+      }
+
+      if (!hasUpdatedUser) {
+        return [...users, user]
+      }
+      return updatedUsers
+    })
   })
 }
 
 export function onUserDisconnected(setUsers) {
   socket.current.off('user_disconnected')
   socket.current.on('user_disconnected', (disconnectedUser) => {
-    setUsers(prevUsers => prevUsers.filter(user => user.userID !== disconnectedUser.userID))
+    setUsers(prevUsers => {
+
+      const users = [...prevUsers]
+      // Update connected user status to offline
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].userID === disconnectedUser.userID) {
+          users[i].connected = false
+        }
+      }
+      return users
+    })
   })
 }
 
