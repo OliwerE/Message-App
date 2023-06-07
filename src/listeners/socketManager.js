@@ -1,6 +1,8 @@
 import { Server } from 'socket.io'
+import { v4 as randomId } from 'uuid'
 
 import { wrap } from './socketMiddlewareWrapper.js'
+import { ChatSession } from '../models/ChatSession.js'
 
 export const sockets = {}
 
@@ -17,11 +19,59 @@ sockets.init = function (httpServer, sessionMiddleware) {
   io.use(wrap(sessionMiddleware))
 
   // only allow authenticated users
-  io.use((socket, next) => {
-    // console.log('test')
-    const session = socket.request.session
+  io.use(async (socket, next) => {
+    const userSession = socket.request.session
     // console.log(session)
-    if (session && session.user) { // used to be: (session && session.authenticated)
+    if (userSession && userSession.user) { // used to be: (session && session.authenticated)
+      console.log('true sessionID')
+      // find existing session
+      const chatSession = await ChatSession.findOne({ username: userSession.user })
+      console.log(chatSession)
+      console.log('efter find session')
+
+      if (chatSession) {
+        console.log('session true')
+        socket.sessionID = chatSession.sessionID
+        socket.userID = chatSession.userID
+        socket.username = chatSession.username
+
+        // Change user to status online
+        await ChatSession.updateOne({ username: userSession.user }, { connected: true })
+
+        // Join userID
+        socket.join(chatSession.userID)
+
+        return next()
+      }
+
+      console.log('check user')
+      const session = socket.request.session
+      // console.log(session)
+      if (!session.user) {
+        return next(new Error('Invalid user'))
+      }
+
+      console.log('skapa ny session')
+
+      // Create session
+      socket.sessionID = randomId()
+      socket.userID = randomId()
+      socket.username = session.user
+      // console.log(socket)
+
+      // Join userID
+      socket.join(socket.userID)
+
+      // Store session
+      const newChatSession = new ChatSession({
+        sessionID: socket.sessionID,
+        userID: socket.userID,
+        username: socket.username,
+        connected: true
+      })
+
+      await newChatSession.save()
+
       next()
     } else {
       console.log('user not auth, socket access denied')
@@ -29,22 +79,28 @@ sockets.init = function (httpServer, sessionMiddleware) {
     }
   })
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
+    // Put users into an array
     const users = []
-    for (const [id, socket] of io.of('/').sockets) { // Only getting users of current server, not good for scaling!!
+
+    const allUsers = await ChatSession.find({})
+    for (let i = 0; i < allUsers.length; i++) {
       users.push({
-        userID: id,
-        username: socket.request.session.user
+        userID: allUsers[i].userID,
+        username: allUsers[i].username,
+        connected: allUsers[i].connected
       })
     }
+
     // console.log(users)
     // socket.emit('chat-room', { msg: 'Welcome to Message App', user: 'Server' }) // fix: don't allow Server as username!
     socket.emit('users', users) // Connected users
 
     // Add user to all clients except itself
     socket.broadcast.emit('user connected', {
-      userID: socket.id,
-      username: socket.request.session.user
+      userID: socket.userID,
+      username: socket.request.session.user,
+      connected: true
     })
 
     /*
@@ -58,16 +114,41 @@ sockets.init = function (httpServer, sessionMiddleware) {
     */
 
     socket.on('private message', ({ content, to }) => {
+      /*
       // console.log(content)
       // console.log(to)
       socket.to(to).emit('private message', {
         content,
-        from: socket.id
+        from: socket.userID
+      })
+      */
+      console.log(content)
+      console.log(to) // To = user1 userID (mottagaren)
+      console.log(socket.userID) // = user22 userID (sändaren)
+
+      socket.to(to).to(socket.userID).emit('private message', { // FUNKAR INTE!!
+        content,
+        from: socket.userID,
+        to
       })
     })
 
-    socket.on('disconnect', () => {
-      io.emit('user_disconnected', { userID: socket.id })
+    socket.on('disconnect', async () => {
+      const matchingSockets = await io.in(socket.userID).allSockets()
+      const isDisconnected = matchingSockets.size === 0
+
+      if (isDisconnected) {
+        console.log('ALL SOCKETS DISCONNECTED!!!')
+        // notify other users
+        io.emit('user_disconnected', { userID: socket.userID })
+
+        // update the connection status of the session
+        await ChatSession.updateOne({ userID: socket.userID }, {
+          userID: socket.userID,
+          username: socket.username,
+          connected: false
+        })
+      }
     })
   })
 }
