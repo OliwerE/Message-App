@@ -364,6 +364,22 @@ code {
 
 /* Extra small devices (phones, 768px and down) */
 @media only screen and (max-width: 768px) {
+  .dashboard-header {
+    height: 75px;
+  }
+
+  .menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0.5rem;
+    height: 75px;
+    width: 50px;
+  }
+
   .dashboard-main-content {
     display: grid;
     grid-template-columns: 100%;
@@ -408,6 +424,7 @@ code {
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
+
   .dashboard-main-content {
     display: grid;
     grid-template-columns: 320px 100%;

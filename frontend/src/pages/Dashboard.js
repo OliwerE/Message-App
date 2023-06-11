@@ -75,6 +75,13 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
       setChatUsername(username)
       setChatUserID(userID)
     }
+
+    if (isMenu) {
+      document.querySelector('.chat-room-menu').style.display = 'none'
+      document.querySelector('.user').style.display = 'none'
+      setMenuBtnText('Open Menu')
+      setIsMenu(false)
+    }
   }
 
   const handleMenuClick = () => {
@@ -95,8 +102,12 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
   return (
     <div className='dashboard'>
       <div className="dashboard-header">
-        { screenWidth < 768 ? <button onClick={handleMenuClick}>{menuBtnText}</button> : null }
-        <h1>Message App</h1>
+        <div className='menu-btn'>
+          { screenWidth < 768 ? <button onClick={handleMenuClick}>{menuBtnText}</button> : null }
+        </div>
+        <div className='title'>
+          <h1>Message App</h1>
+        </div>
       </div>
       <div className='dashboard-main-content'>
         {isSocketConnected ? <ChatRoomMenu handleChangeChatRoom={handleChangeChatRoom} /> : null}
