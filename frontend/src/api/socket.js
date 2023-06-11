@@ -13,9 +13,8 @@ export function connectSocket() {
 
 export function onUsers(setUsers) {
   socket.current.off('users')
-  socket.current.on('users', connectedUsers => { // ToDo sort users
-    const connectedUsersExceptSelf = connectedUsers.filter(user => user.userID !== socket.current.id)
-    setUsers(users => [...users, ...connectedUsersExceptSelf])
+  socket.current.on('users', connectedUsers => {
+    setUsers(() => [...connectedUsers])
   })
 }
 

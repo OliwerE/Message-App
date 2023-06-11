@@ -29,10 +29,22 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
       })
   }, [])
 
-  const handleChangeChatRoom = (e) => {
-    if (e.target.nodeName === 'LI') { // If User element
+  const handleChangeChatRoom = (e) => { // ToDo refactor this function!!
+    if (e.target.nodeName === 'LI') {
       const userID = e.target.querySelector('div').id
       const username = e.target.querySelector('div').textContent
+
+      setChatUsername(username)
+      setChatUserID(userID)
+    } else if (e.target.nodeName === 'DIV') {
+      const userID = e.target.getAttribute('id')
+      const username = e.target.textContent
+
+      setChatUsername(username)
+      setChatUserID(userID)
+    }  else if (e.target.nodeName === 'P') {
+      const userID = e.target.parentNode.querySelector('div').getAttribute('id')
+      const username = e.target.parentNode.querySelector('div').textContent
 
       setChatUsername(username)
       setChatUserID(userID)

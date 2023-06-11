@@ -88,7 +88,8 @@ sockets.init = function (httpServer, sessionMiddleware) {
       users.push({
         userID: allUsers[i].userID,
         username: allUsers[i].username,
-        connected: allUsers[i].connected
+        connected: allUsers[i].connected,
+        isSelf: socket.userID === allUsers[i].userID
       })
     }
 
