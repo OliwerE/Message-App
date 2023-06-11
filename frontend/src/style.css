@@ -191,14 +191,14 @@ code {
 
 /* Chat Room */
 
-.chat-room {
+/* .chat-room {
   grid-area: chat-room;
   width: calc(100% - 320px);
   height: calc(100vh - 75px);
   background-color: #8f9715;
   box-sizing: border-box;
   border-left: 1px solid #c5c5c5;
-}
+} */
 
 .chat-room .room-header {
   height: 50px;
@@ -304,14 +304,14 @@ code {
   border-radius: 0 0.5rem 0.5rem 0;
 }
 
-.dashboard-main-content {
+/* .dashboard-main-content {
   display: grid;
   grid-template-columns: 320px 100%;
   grid-template-rows: 1fr 200px;
   grid-template-areas:
-      'chat-room-menu chat-room '
-      'user chat-room ';
-}
+    'chat-room-menu chat-room '
+    'user chat-room ';
+} */
 
 .user {
   grid-area: user;
@@ -360,4 +360,111 @@ code {
   cursor: pointer;
   background-color: #d1d1d1;
   transition-duration: 200ms
+}
+
+/* Extra small devices (phones, 768px and down) */
+@media only screen and (max-width: 768px) {
+  .dashboard-header {
+    height: 75px;
+  }
+
+  .menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0.5rem;
+    height: 75px;
+    width: 50px;
+  }
+
+  .dashboard-main-content {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 100%;
+    grid-template-areas:
+      'chat-room '
+      'chat-room ';
+  }
+
+  .chat-room-menu {
+    grid-area: chat-room-menu;
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 200px - 75px);
+  }
+
+  .user {
+    grid-area: user;
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 200px;
+    bottom: 0;
+  }
+
+  .chat-room {
+    grid-area: chat-room;
+    width: 100%;
+    min-width: 320px;
+    height: calc(100vh - 75px);
+    background-color: #8f9715;
+    box-sizing: border-box;
+    border-left: 1px solid #c5c5c5;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+/* @media only screen and (min-width: 600px) {
+
+} */
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+
+  .dashboard-main-content {
+    display: grid;
+    grid-template-columns: 320px 100%;
+    grid-template-rows: 1fr 200px;
+    grid-template-areas:
+      'chat-room-menu chat-room '
+      'user chat-room ';
+  }
+
+  .chat-room-menu {
+    background-color: #f1f1f1;
+    top: 75px;
+    max-height: calc(100vh - 225px);
+    width: 320px;
+    display: block;
+  }
+
+  .user {
+    background-color: #f1f1f1;
+    box-sizing: border-box;
+    border-top: 1px solid #c5c5c5;
+    display: block;
+  }
+
+  .chat-room {
+    grid-area: chat-room;
+    width: calc(100% - 320px);
+    height: calc(100vh - 75px);
+    background-color: #8f9715;
+    box-sizing: border-box;
+    border-left: 1px solid #c5c5c5;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+
 }
