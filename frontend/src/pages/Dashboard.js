@@ -15,6 +15,32 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
   const [chatUsername, setChatUsername] = useState('')
   const [chatUserID, setChatUserID] = useState('')
 
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+  const [menuBtnText, setMenuBtnText] = useState('Open Menu')
+  const [isMenu, setIsMenu] = useState(false)
+
+  const handleResize = () => {
+    setScreenWidth(window.innerWidth);
+
+    if (window.innerWidth > 768) {
+      document.querySelector('.chat-room-menu').style.display = 'block'
+      document.querySelector('.user').style.display = 'block'
+    } else {
+      document.querySelector('.chat-room-menu').style.display = 'none'
+      document.querySelector('.user').style.display = 'none'
+    }
+    setMenuBtnText('Open Menu')
+    setIsMenu(false)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    }
+  }, [])
+
   useEffect(() => {
     connectSocket()
     setIsSocketConnected(true)
@@ -51,12 +77,26 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
     }
   }
 
+  const handleMenuClick = () => {
+    console.log(isMenu)
+    if (!isMenu) {
+      document.querySelector('.chat-room-menu').style.display = 'block'
+      document.querySelector('.user').style.display = 'block'
+      setMenuBtnText('Close Menu')
+      setIsMenu(true)
+    } else {
+      document.querySelector('.chat-room-menu').style.display = 'none'
+      document.querySelector('.user').style.display = 'none'
+      setMenuBtnText('Open Menu')
+      setIsMenu(false)
+    }
+  }
+
   return (
     <div className='dashboard'>
       <div className="dashboard-header">
-
+        { screenWidth < 768 ? <button onClick={handleMenuClick}>{menuBtnText}</button> : null }
         <h1>Message App</h1>
-
       </div>
       <div className='dashboard-main-content'>
         {isSocketConnected ? <ChatRoomMenu handleChangeChatRoom={handleChangeChatRoom} /> : null}
