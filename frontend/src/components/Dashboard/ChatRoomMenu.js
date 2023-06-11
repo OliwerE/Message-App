@@ -21,7 +21,7 @@ const ChatRoomMenu = ({ handleChangeChatRoom }) => {
       {users.map((user, i) => {
         return (
         <li key={i}>
-          <div id={user.userID} className="contact-name">{user.username}</div>
+          <div id={user.userID} className="contact-name">{user.username} {user.isSelf ? '(yourself)' : null}</div>
           {user.connected ? <p style={{ fontWeight: 'bold', color: 'green', margin: 0, padding: 0, width: 'fit-content' }}>Online</p> : <p style={{ fontWeight: 'bold', color: 'red', margin: 0, padding: 0 }}>Offline</p>}
           {/* <div className="contact-last-message">{contact.lastMessage}</div> */}
           {/* <div className="contact-time-ago">{contact.lastMessageTimeAgo}</div> */}
