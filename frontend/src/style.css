@@ -394,7 +394,7 @@ code {
     display: none;
     position: absolute;
     width: 100%;
-    height: calc(100% - 200px - 75px);
+    height: calc(100vw - 200px - 75px);
   }
 
   .user {
