@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import ChatMessages from './ChatMessages'
 
-import { socket, onPrivateMessage } from '../../api/socket'
+import { useChat } from '../../contexts/ChatContext';
 
 const ChatRoom = ({ chatUsername, chatUserID }) => {
-  const [messages, setMessages] = useState([])
+  const { messages, sendMessage } = useChat()
   const [textMessage, setTextMessage] = useState('')
 
-  useEffect(() => {
-    setMessages([])
-    onPrivateMessage(chatUserID, chatUsername, setMessages)
-  },[chatUsername, chatUserID])
 
   const handleMessageSubmit = (e) => {
     e.preventDefault()
 
     if (textMessage.length < 1) return
 
-    setMessages(messages => [...messages, { isSelf: true, message: textMessage }])
-
-    socket.current.emit('private message', {
-      content: textMessage,
-      to: chatUserID,
-    })
+    sendMessage(chatUserID, textMessage)
     
     setTextMessage('')
   }
@@ -33,7 +24,7 @@ const ChatRoom = ({ chatUsername, chatUserID }) => {
         <h1>{chatUsername}</h1>
       </div>
       <div className="message-container">
-        <ChatMessages messages={messages} />
+        <ChatMessages messages={messages[chatUserID]} chatUsername={chatUsername} />
       </div>
       <div className="room-input-menu">
         <form onSubmit={handleMessageSubmit}>

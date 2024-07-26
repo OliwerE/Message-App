@@ -7,7 +7,9 @@ import User from '../components/Dashboard/User'
 
 import { getUsername } from '../api/services/UserService'
 
-import { connectSocket } from '../api/socket'
+// import { connectSocket } from '../api/socket' // Moved to ChatMessagesContext.js
+
+import { ChatProvider } from '../contexts/ChatContext';
 
 const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
   const [username, setUsername] = useState('')
@@ -42,10 +44,11 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
   }, [])
 
   useEffect(() => {
-    connectSocket()
+    // connectSocket() // Moved to ChatMessagesContext.js
     setIsSocketConnected(true)
   },[])
 
+  // Username bottom left
   useEffect(() => {
 
     getUsername().then(json => {
@@ -110,8 +113,10 @@ const Dashboard = ({ auth, setAuth, updateCsrfToken }) => {
         </div>
       </div>
       <div className='dashboard-main-content'>
-        {isSocketConnected ? <ChatRoomMenu handleChangeChatRoom={handleChangeChatRoom} /> : null}
-        {isSocketConnected ? <ChatRoom chatUsername={chatUsername} chatUserID={chatUserID} /> : null}
+        <ChatProvider>
+          {isSocketConnected ? <ChatRoomMenu handleChangeChatRoom={handleChangeChatRoom} /> : null}
+          {isSocketConnected ? <ChatRoom chatUsername={chatUsername} chatUserID={chatUserID} /> : null}
+        </ChatProvider>
         {isSocketConnected ? <User username={username} auth={auth} setAuth={setAuth} updateCsrfToken={updateCsrfToken} /> : null}
       </div>
     </div>

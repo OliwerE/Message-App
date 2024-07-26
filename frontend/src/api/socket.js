@@ -58,11 +58,23 @@ export function onUserDisconnected(setUsers) {
   })
 }
 
-export function onPrivateMessage(chatUserID, chatUsername, setMessages) {
-  socket.current.off('private message')
+export function onPrivateMessage(setMessages) {
+  socket.current.off('private message');
   socket.current.on('private message', ({ content, from }) => {
-    if (chatUserID === from) {
-      setMessages(messages => [...messages, { isSelf: false, message: content, user: chatUsername }])
-    }
+    setMessages(prevMessages => {
+      let newValue
+      if (prevMessages[from] !== undefined) {
+        console.log('not undefined')
+        newValue = { [from]: [...prevMessages[from], { isSelf: false, message: content }] }
+      } else {
+        console.log('is undefined')
+        newValue = { [from]: [{ isSelf: false, message: content }] }
+      }
+
+      return {
+        ...prevMessages,
+        ...newValue
+      }
+    })
   })
 }
