@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-const ChatMessages = ({ messages }) => {
+const ChatMessages = ({ messages, chatUsername }) => {
   useEffect(() => {
     // Change?? https://stackoverflow.com/questions/59198952/using-document-queryselector-in-react-should-i-use-refs-instead-how
     document.querySelector('.chat-messages').scrollTo(0, document.querySelector(".chat-messages").scrollHeight)
@@ -9,21 +9,21 @@ const ChatMessages = ({ messages }) => {
   return (
     <>
       <ul className="chat-messages">
-        {messages.map(msg => {
+        {messages !== undefined ? messages.map((msg, i) => {
           if (msg.isSelf === true) {
-            return <li className="my-msg">
+            return <li className="my-msg" key={i}>
               <div>
                 {msg.message}
               </div>
             </li>
           } else {
-            return <li className="msg">
+            return <li className="msg" key={i}>
               <div>
-                <span><b>{msg.user}:</b> {msg.message}</span>
+                <span><b>{chatUsername}:</b> {msg.message}</span>
               </div>
             </li>
           }
-        })}
+        }) : null }
       </ul>
     </>
   )

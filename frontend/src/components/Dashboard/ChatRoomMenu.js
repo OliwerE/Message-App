@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 
 import { onUserDisconnected, onUsers, onUserConnected } from '../../api/socket'
 
+// import { useChatMessages } from '../../contexts/ChatContext';
+
 const ChatRoomMenu = ({ handleChangeChatRoom }) => {
   const [users, setUsers] = useState([])
 
