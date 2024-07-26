@@ -64,10 +64,8 @@ export function onPrivateMessage(setMessages) {
     setMessages(prevMessages => {
       let newValue
       if (prevMessages[from] !== undefined) {
-        console.log('not undefined')
         newValue = { [from]: [...prevMessages[from], { isSelf: false, message: content }] }
       } else {
-        console.log('is undefined')
         newValue = { [from]: [{ isSelf: false, message: content }] }
       }
 

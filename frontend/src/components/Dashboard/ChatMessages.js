@@ -9,15 +9,15 @@ const ChatMessages = ({ messages, chatUsername }) => {
   return (
     <>
       <ul className="chat-messages">
-        {messages !== undefined ? messages.map(msg => {
+        {messages !== undefined ? messages.map((msg, i) => {
           if (msg.isSelf === true) {
-            return <li className="my-msg">
+            return <li className="my-msg" key={i}>
               <div>
                 {msg.message}
               </div>
             </li>
           } else {
-            return <li className="msg">
+            return <li className="msg" key={i}>
               <div>
                 <span><b>{chatUsername}:</b> {msg.message}</span>
               </div>

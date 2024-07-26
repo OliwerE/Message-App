@@ -23,10 +23,8 @@ export function ChatProvider({ children }) {
     setMessages(prevMessages => {
       let newValue
       if (prevMessages[chatUserID] !== undefined) {
-        console.log('not undefined')
         newValue = { [chatUserID]: [...prevMessages[chatUserID], { isSelf: true, message: textMessage }] }
       } else {
-        console.log('is undefined')
         newValue = { [chatUserID]: [{ isSelf: true, message: textMessage }] }
       }
 
