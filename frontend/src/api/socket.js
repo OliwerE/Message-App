@@ -76,3 +76,39 @@ export function onPrivateMessage(setMessages) {
     })
   })
 }
+
+export function onGetMessages(currentChatUserID, setMessages) {
+  socket.current.off('get messages')
+  socket.current.on('get messages', ({ messages }) => {
+    // Add messages to frontend
+
+    for (let i = 0; i < messages.length; i++) {
+      // Is self or message from other user
+      let isSelf
+      if (messages[i].from === currentChatUserID) {
+        isSelf = false
+      } else {
+        isSelf = true
+      }
+
+      const message = {
+        isSelf,
+        message: messages[i].message
+      }
+
+      setMessages(prevMessages => {
+        let newValue
+        if (prevMessages[currentChatUserID] !== undefined) {
+          newValue = { [currentChatUserID]: [...prevMessages[currentChatUserID], message] }
+        } else {
+          newValue = { [currentChatUserID]: [message] }
+        }
+
+        return {
+          ...prevMessages,
+          ...newValue
+        }
+      })
+    }
+  })
+}

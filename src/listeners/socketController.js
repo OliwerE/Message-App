@@ -90,6 +90,26 @@ export class SocketController {
       connected: true
     })
 
+    // Get old messages when open chat
+    socket.on('get messages', async ({ chatUserID }) => {
+      // Find 10 latest messages in db
+      const messages = await ChatMessage.find({
+        $or: [
+          { to: chatUserID, from: socket.userID },
+          { to: socket.userID, from: chatUserID }
+        ]
+      })
+        .sort({ createdAt: -1 })
+        .limit(10) // ToDo: get older messages, pagination!
+
+      messages.sort((a, b) => a.createdAt - b.createdAt)
+
+      // Return messages to client
+      socket.emit('get messages', {
+        messages
+      })
+    })
+
     socket.on('private message', async ({ content, to }) => {
       // Save message in DB
       try {
