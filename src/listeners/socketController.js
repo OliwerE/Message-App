@@ -6,7 +6,7 @@ import { v4 as randomId } from 'uuid'
  */
 export class SocketController {
   /**
-   * Auth middleware.
+   * Authentication middleware.
    *
    * @param {object} socket - Socket object.
    * @param {Function} next - Next function.
