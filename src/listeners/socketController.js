@@ -1,4 +1,5 @@
 import { ChatSession } from '../models/ChatSession.js'
+import { ChatMessage } from '../models/ChatMessage.js'
 import { v4 as randomId } from 'uuid'
 
 /**
@@ -89,7 +90,22 @@ export class SocketController {
       connected: true
     })
 
-    socket.on('private message', ({ content, to }) => {
+    socket.on('private message', async ({ content, to }) => {
+      // Save message in DB
+      try {
+        const newMessage = new ChatMessage({
+          message: content,
+          from: socket.userID,
+          to
+        })
+
+        await newMessage.save()
+      } catch (err) {
+        console.error(err)
+      }
+
+      // Send message to recipient
+
       socket.to(to).to(socket.userID).emit('private message', { // FUNKAR INTE!!
         content,
         from: socket.userID,
