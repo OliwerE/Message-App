@@ -6,10 +6,11 @@ import { v4 as randomId } from 'uuid'
  */
 export class SocketController {
   /**
-   * 
-   * @param {*} socket 
-   * @param {*} next 
-   * @returns 
+   * Auth middleware.
+   *
+   * @param {object} socket - Socket object.
+   * @param {Function} next - Next function.
+   * @returns {Function} - Next function.
    */
   authMiddleware = async (socket, next) => {
     const userSession = socket.request.session
@@ -72,8 +73,9 @@ export class SocketController {
   }
 
   /**
-   * 
-   * @param {*} socket 
+   * Handle socket connections.
+   *
+   * @param {object} socket - Socket object.
    */
   handleConnection = async (socket) => {
     // Put users into an array
