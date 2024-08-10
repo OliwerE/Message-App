@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ChatMessages from './ChatMessages'
 
 import { useChat } from '../../contexts/ChatContext';
 
 const ChatRoom = ({ chatUsername, chatUserID }) => {
-  const { messages, sendMessage } = useChat()
+  const { messages, sendMessage, getMessages } = useChat()
   const [textMessage, setTextMessage] = useState('')
+
+  useEffect(() => {
+    if (chatUserID !== '') { // Shouldn't try to call when page is loading!
+      getMessages(chatUserID)
+    }
+  }, [chatUserID])
 
 
   const handleMessageSubmit = (e) => {
